@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ymm/widgets/settingspanel.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -34,7 +35,17 @@ class _HomePageState extends State<HomePage> {
                   "Home",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                TextButton(onPressed: () {}, child: Icon(Icons.more_vert, size: 28.0,))
+                TextButton(
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SettingsPanel();
+                      },
+                    );
+                  },
+                  child: Icon(Icons.more_vert, size: 28.0,)
+                ),
               ],
             ),
             Card(
