@@ -43,6 +43,11 @@ class App extends StatelessWidget {
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
+            bodyLarge: TextStyle(
+              fontFamily: "dubai",
+              decoration: TextDecoration.none,
+              fontSize: 18,
+            ),
             bodyMedium: TextStyle(
               fontFamily: "dubai",
               decoration: TextDecoration.none,

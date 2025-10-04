@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ymm/models/state.dart';
+import 'package:ymm/widgets/translistitem.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -10,17 +13,26 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 50, 15, 10),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              "Transactions",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ],
+    return Consumer<AppState>(
+      builder: (context, appState, child) => Padding(
+        padding: const EdgeInsets.fromLTRB(15, 50, 15, 10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                "Transactions",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: appState.transactions.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return TransactionListItem(data: appState.transactions[index],);
+                }
+              ),
+            ],
+          ),
         ),
       ),
     );

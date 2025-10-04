@@ -12,13 +12,6 @@ class HomePage extends StatefulWidget {
 // https://pub.dev/packages/fl_chart
 
 class _HomePageState extends State<HomePage> {
-  List<Color> gradientColors = [
-    Color.fromARGB(255, 220, 235, 211),
-    Color.fromARGB(255, 77, 197, 8),
-  ];
-
-  bool showAvg = false;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -53,7 +46,12 @@ class _HomePageState extends State<HomePage> {
               clipBehavior: Clip.hardEdge,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [Theme.of(context).colorScheme.primary.withAlpha(150), Theme.of(context).colorScheme.secondary.withAlpha(150)])
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary.withAlpha(150),
+                      Theme.of(context).colorScheme.secondary.withAlpha(150)
+                    ]
+                  )
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
