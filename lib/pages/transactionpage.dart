@@ -11,6 +11,10 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
+
+  // TODO: [TRANS] add separators to show the date
+  // TODO: [TRANS] sort the transactions by date
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppState>(
@@ -24,7 +28,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 "Transactions",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              ListView.builder(
+              ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(height: 3.0),
                 shrinkWrap: true,
                 itemCount: appState.transactions.length,
                 itemBuilder: (BuildContext context, int index) {

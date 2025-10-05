@@ -1,8 +1,8 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
 import 'package:ymm/models/state.dart';
+import 'package:ymm/models/transactionmodel.dart';
 import 'package:ymm/widgets/budgeteditpanel.dart';
 import 'package:ymm/widgets/translistitem.dart';
 
@@ -26,127 +26,154 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
     final lastDayOfMonth = DateTime(today.year, today.month + 1, 0).day;
 
     return Consumer<AppState>(
-      builder: (context, appState, child) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary)
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              onPressed: () {
-                showModalBottomSheet<Budget>(
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BudgetEditPanel(data: updatedBudget, callback: (Budget newBudget) => updatedBudget = newBudget);
-                  },
-                );
-              },
+      builder: (context, appState, child) {
+        List<Transaction> filteredTransactions = appState.transactionsByCategory(updatedBudget.categories);
+        double total = filteredTransactions.fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
+
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary)
             ),
-          ],
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                updatedBudget.name,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                "\$${updatedBudget.limit.toStringAsFixed(2)}",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                updatedBudget.weekly ? "Weekly" : "Monthly",
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              SizedBox(height: 15.0),
-              Card(
-                clipBehavior: Clip.hardEdge,
-                color: Theme.of(context).colorScheme.surfaceBright,
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        right: max(
-                          constraints.maxWidth *
-                            ( 1 - (
-                              appState.transactionsByCategory(widget.data.categories).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"] ?? 0
-                              / widget.data.limit
-                            )),
-                          0
-                        ),
-                      ),
-                      child: Container(
-                        constraints: BoxConstraints(minHeight: 10.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withAlpha(200),
-                          shape: BoxShape.rectangle
-                        ),
-                      ),
-                    );
-                  },
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
-              ),
-              SizedBox(height: 15.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "\$${appState.transactionsByCategory(widget.data.categories).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!.toStringAsFixed(2)} spent",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Text(
-                    "\$${(
-                      ((widget.data.limit - appState.transactionsByCategory(widget.data.categories).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!)
-                      / (lastDayOfMonth - today.day -1))
-                    ).toStringAsFixed(2)}/day remaining",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-              Divider(),
-              Text(
-                "Categories",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  // TODO: [BUDGET] double check how this looks once there are categories to populate it
-                  children: widget.data.categories.map((cat) => Icon(cat.icon as IconData?, color: cat.color)).toList(),
-                ),
-              ),
-              Divider(),
-              Text(
-                "Transactions",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: appState.transactionsByCategory(widget.data.categories).length,
-                itemBuilder: (BuildContext context, int index) {
-                  return TransactionListItem(data: appState.transactionsByCategory(widget.data.categories)[index]); 
+                onPressed: () {
+                  showModalBottomSheet<Budget>(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return BudgetEditPanel(data: updatedBudget, callback: (Budget newBudget) => updatedBudget = newBudget);
+                    },
+                  );
                 },
               ),
             ],
           ),
-        ),
-      ),
+          body: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  updatedBudget.name,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Text(
+                  "\$${updatedBudget.limit.toStringAsFixed(2)}",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Text(
+                  updatedBudget.weekly ? "Weekly" : "Monthly",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                SizedBox(height: 15.0),
+                Card(
+                  clipBehavior: Clip.hardEdge,
+                  color: Theme.of(context).colorScheme.surfaceBright,
+                  child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          right: constraints.maxWidth * (updatedBudget.limit == 0.0 ? 0 : ( 1 - (total / updatedBudget.limit))),
+                        ),
+                        child: Container(
+                          constraints: BoxConstraints(minHeight: 10.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                            shape: BoxShape.rectangle
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 15.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "\$${total.toStringAsFixed(2)} spent",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                    Text(
+                      "\$${(
+                        ((updatedBudget.limit - total)
+                        / (lastDayOfMonth - today.day -1))
+                      ).toStringAsFixed(2)}/day remaining",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                Divider(),
+                Visibility(
+                  visible: updatedBudget.categories.isNotEmpty,
+                  child: Text(
+                    "Categories",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Visibility(
+                  visible: updatedBudget.categories.isNotEmpty,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: updatedBudget.categories.map((cat) => Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(
+                            Icons.square_rounded,
+                            color: cat.color.withAlpha(50),
+                            size: 52.0,
+                          ),
+                          Icon(
+                            cat.icon.icon,
+                            color: cat.color,
+                            size: 28.0,
+                          ),
+                        ],
+                      ),).toList(),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: updatedBudget.categories.isNotEmpty,
+                  child: Divider()
+                ),
+                Visibility(
+                  visible: filteredTransactions.isNotEmpty,
+                  child: Text(
+                    "Transactions",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+                Visibility(
+                  visible: filteredTransactions.isNotEmpty,
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(height: 3.0),
+                    shrinkWrap: true,
+                    itemCount: filteredTransactions.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return TransactionListItem(data: filteredTransactions[index]); 
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     );
   }
 }

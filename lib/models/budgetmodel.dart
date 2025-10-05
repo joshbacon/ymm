@@ -1,4 +1,4 @@
-import 'package:ymm/models/state.dart';
+import 'package:ymm/models/categorymodel.dart';
 
 class Budget {
   final String _id;

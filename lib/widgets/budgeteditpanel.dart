@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
+import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/state.dart';
 
 class BudgetEditPanel extends StatefulWidget {
@@ -16,12 +17,14 @@ class BudgetEditPanel extends StatefulWidget {
 
 class _BudgetEditPanelState extends State<BudgetEditPanel> {
 
+  late Budget updatedBudget = widget.data.copyWith();
+
   bool weekly = false;
 
   late final TextEditingController _nameController = TextEditingController(text: widget.data.name);
   late final TextEditingController _limitController = TextEditingController(text: widget.data.limit.toString());
 
-  late Budget updatedBudget = widget.data.copyWith();
+  // TODO: [BUDGET] : update the segment button to scroll in case there's a lot (fixed sized box)
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +32,13 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
       builder: (context, appState, child) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SizedBox(
-          height: 400,
+          height: 500,
           child: Center(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 100.0),
+              padding: EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 75.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
                 spacing: 10.0,
                 children: [
                   //name
@@ -98,6 +101,7 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                     selected: {appState.budgets.firstWhere((elem) => elem.id == widget.data.id).weekly},
                     showSelectedIcon: false,
                     onSelectionChanged: (newSelection) {
+                      // TODO: [BUDGET] have this update the "remaining /day" part on the view page and the card (also the date range on the card)
                       updatedBudget.setWeekly(newSelection.first);
                       widget.callback(updatedBudget);
                       appState.updateBudget(updatedBudget);
@@ -106,8 +110,42 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                       });
                     },
                   ),
-                  // TODO: [BUDGET] add category inclusion selection
-                  // TODO: [BUDGET] add a delete button (with a confirmation popup)
+                  SegmentedButton(
+                    multiSelectionEnabled: true,
+                    emptySelectionAllowed: true,
+                    segments: appState.categories.map((cat) => ButtonSegment<Category>(
+                      value: cat,
+                      label: Text(cat.title, style: TextStyle(color: cat.color)),
+                      icon: Icon(cat.icon.icon, color: cat.color),
+                    )).toList(),
+                    selected: updatedBudget.categories.toSet(),
+                    showSelectedIcon: false,
+                    onSelectionChanged: (Set<Category> newCategories) {
+                      updatedBudget.setCategories(newCategories.toList());
+                      widget.callback(updatedBudget);
+                      appState.updateBudget(updatedBudget);
+                    },
+                  ),
+                  Divider(),
+                  OutlinedButton(
+                    onPressed: () {
+                      // This throws an error but maay not see in the built apk?
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      appState.removeBudget(updatedBudget);
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.delete, color: Theme.of(context).colorScheme.primary.withAlpha(150)),
+                        SizedBox(width: 5.0),
+                        Text(
+                          "Delete",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )
+                      ],
+                    )
+                  )
                 ],
               ),
             ),

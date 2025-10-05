@@ -78,7 +78,7 @@ class BudgetCard extends StatelessWidget {
                 )
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, data.categories.isNotEmpty ? 0.0 : 8.0),
                 child: Center(
                   child: Text(
                     "You can spend \$${(
@@ -89,6 +89,30 @@ class BudgetCard extends StatelessWidget {
                   ),
                 ),
               ),
+              // Do we want this?????
+              // Visibility(
+              //   visible: data.categories.isNotEmpty,
+              //   child: SingleChildScrollView(
+              //     scrollDirection: Axis.horizontal,
+              //     child: Row(
+              //       children: data.categories.map((cat) => Stack(
+              //         alignment: Alignment.center,
+              //         children: [
+              //           Icon(
+              //             Icons.square_rounded,
+              //             color: cat.color.withAlpha(50),
+              //             size: 52.0,
+              //           ),
+              //           Icon(
+              //             cat.icon.icon,
+              //             color: cat.color,
+              //             size: 28.0,
+              //           ),
+              //         ],
+              //       ),).toList(),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

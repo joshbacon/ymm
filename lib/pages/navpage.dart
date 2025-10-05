@@ -34,6 +34,7 @@ class _YMMState extends State<YMM> {
             onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
+                isScrollControlled: true,
                 builder: (BuildContext context) {
                   return NewTransactionPanel();
                 },
