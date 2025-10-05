@@ -21,7 +21,7 @@ class Budget {
   void setCategories(List<Category> newValue) => _categories = newValue;
   void setWeekly(bool newValue) => _weekly = newValue;
 
-  Budget copyWith({String? name, double? limit, List<Category>? categories, bool? nweekly}) {
-    return Budget(_id, name ?? _name, limit ?? _limit, categories ?? _categories, nweekly ?? _weekly);
+  Budget copyWith({String? name, double? limit, List<Category>? categories, bool? weekly}) {
+    return Budget(_id, name ?? _name, limit ?? _limit, categories ?? _categories, weekly ?? _weekly);
   }
 }

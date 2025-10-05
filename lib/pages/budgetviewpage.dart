@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
 import 'package:ymm/models/state.dart';
@@ -23,13 +24,15 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
   Widget build(BuildContext context) {
 
     final today = DateTime.now();
-    final lastDayOfMonth = DateTime(today.year, today.month + 1, 0).day;
+    final lastDayOfMonth = DateTime(today.year, today.month + 1, 0);
+    final thisMonday = DateTime(today.year, today.month, today.day).subtract(Duration(days: DateTime.now().weekday -1));
 
     return Consumer<AppState>(
       builder: (context, appState, child) {
+        // TODO: [BUDGET] also account for if it's weekly or monthly when querying transactions
         List<Transaction> filteredTransactions = appState.transactionsByCategory(updatedBudget.categories);
         double total = filteredTransactions.fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
-
+        
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
@@ -75,6 +78,12 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
+                Text(
+                  updatedBudget.weekly ?
+                  "${DateFormat.MMMd().format(thisMonday)} - ${DateFormat.MMMd().format(thisMonday.add(Duration(days: 6)))}" :
+                  "${DateFormat.MMMd().format(DateTime(today.year, today.month, 1))} - ${DateFormat.MMMd().format(lastDayOfMonth)}",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
                 SizedBox(height: 15.0),
                 Card(
                   clipBehavior: Clip.hardEdge,
@@ -108,8 +117,11 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                     ),
                     Text(
                       "\$${(
-                        ((updatedBudget.limit - total)
-                        / (lastDayOfMonth - today.day -1))
+                        (updatedBudget.limit - total) / (
+                          updatedBudget.weekly ?
+                          (today.weekday - DateTime.monday +1) :
+                          (lastDayOfMonth.day - today.day -1)
+                        )
                       ).toStringAsFixed(2)}/day remaining",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium,

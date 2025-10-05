@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
@@ -101,7 +102,6 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                     selected: {appState.budgets.firstWhere((elem) => elem.id == widget.data.id).weekly},
                     showSelectedIcon: false,
                     onSelectionChanged: (newSelection) {
-                      // TODO: [BUDGET] have this update the "remaining /day" part on the view page and the card (also the date range on the card)
                       updatedBudget.setWeekly(newSelection.first);
                       widget.callback(updatedBudget);
                       appState.updateBudget(updatedBudget);
@@ -110,22 +110,107 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                       });
                     },
                   ),
-                  SegmentedButton(
-                    multiSelectionEnabled: true,
-                    emptySelectionAllowed: true,
-                    segments: appState.categories.map((cat) => ButtonSegment<Category>(
-                      value: cat,
-                      label: Text(cat.title, style: TextStyle(color: cat.color)),
-                      icon: Icon(cat.icon.icon, color: cat.color),
-                    )).toList(),
-                    selected: updatedBudget.categories.toSet(),
-                    showSelectedIcon: false,
-                    onSelectionChanged: (Set<Category> newCategories) {
-                      updatedBudget.setCategories(newCategories.toList());
-                      widget.callback(updatedBudget);
-                      appState.updateBudget(updatedBudget);
-                    },
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 5.0,
+                      children: [
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: Colors.grey.shade800,
+                            child: const Text('AB'),
+                          ),
+                          label: const Text('Aaron Burr'),
+                        ),
+                      ],
+                    ),
                   ),
+                  // SegmentedButton(
+                  //   multiSelectionEnabled: true,
+                  //   emptySelectionAllowed: true,
+                  //   segments: appState.categories.map((cat) => ButtonSegment<Category>(
+                  //     value: cat,
+                  //     label: Text(cat.title, style: TextStyle(color: cat.color)),
+                  //     icon: Icon(cat.icon.icon, color: cat.color),
+                  //   )).toList(),
+                  //   selected: updatedBudget.categories.toSet(),
+                  //   showSelectedIcon: false,
+                  //   onSelectionChanged: (Set<Category> newCategories) {
+                  //     updatedBudget.setCategories(newCategories.toList());
+                  //     widget.callback(updatedBudget);
+                  //     appState.updateBudget(updatedBudget);
+                  //   },
+                  // ),
                   Divider(),
                   OutlinedButton(
                     onPressed: () {

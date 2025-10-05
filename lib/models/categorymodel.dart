@@ -17,4 +17,8 @@ class Category {
   void setTitle(String newValue) => _title = newValue;
   void setIcon(Icon newValue) => _icon = newValue;
   void setColor(Color newValue) => _color = newValue;
+
+  Category copyWith({String? title, Icon? icon, Color? color}) {
+    return Category(_id, title ?? _title, icon ?? _icon, color ?? _color);
+  }
 }

@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     showModalBottomSheet<void>(
                       context: context,
+                      isScrollControlled: true,
                       builder: (BuildContext context) {
                         return SettingsPanel();
                       },

@@ -70,6 +70,23 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Category functions
+  void addCategory(Category item) {
+    _categories.add(item);
+    notifyListeners();
+  }
+  
+  void removeCategory(Category item) {
+    _categories.removeWhere((cat) => cat.id == item.id);
+    notifyListeners();
+  }
+
+  void updateCategory(Category item) {
+    int index = _categories.indexWhere((element) => element.id == item.id);
+    _categories.replaceRange(index, index+1, [item]);
+    notifyListeners();
+  }
+
   /// Change the color scheme
   void changeColor(Color newColor) {
     _seedColor = newColor;
