@@ -19,8 +19,7 @@ class _AddCategoryCardState extends State<AddCategoryCard> {
     return Consumer<AppState>(
       builder: (context, appState, child) => GestureDetector(
         onTap: () {
-          Category newCategory = Category.empty();
-          appState.addCategory(newCategory);
+          appState.addCategory(updatedCategory);
           showModalBottomSheet<Category>(
             context: context,
             isScrollControlled: true,

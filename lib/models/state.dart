@@ -8,13 +8,13 @@ class AppState extends ChangeNotifier {
 
   /// Internal, private state of the cart.
   final List<Transaction> _transactions = [
-    Transaction(1, "McDonalds", DateTime.now(), 11.93, Category(1, "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), null),
-    Transaction(2, "Sobeys", DateTime.now(), 43.87, Category(1, "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), Subcategory()),
+    Transaction(1, "McDonalds", DateTime.now(), 11.93, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), null),
+    Transaction(2, "Sobeys", DateTime.now(), 43.87, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), Subcategory()),
   ];
   final List<Budget> _budgets = [];
   final List<Category> _categories = [
-    Category(1, "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)),
-    Category(2, "Gas", Icon(Icons.local_gas_station), const Color.fromARGB(255, 31, 92, 204))
+    Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)),
+    Category("2", "Gas", Icon(Icons.local_gas_station), const Color.fromARGB(255, 31, 92, 204))
   ];
 
   Color _seedColor = Color.fromARGB(255, 192, 34, 231);
@@ -37,8 +37,7 @@ class AppState extends ChangeNotifier {
   }
 
   void updateTransaction(Transaction item) {
-    int index = _transactions.indexWhere((element) => element.id == item.id);
-    _transactions.replaceRange(index, index, [item]);
+    _transactions[_transactions.indexWhere((element) => element.id == item.id)] = item;
     notifyListeners();
   }
 
@@ -65,8 +64,7 @@ class AppState extends ChangeNotifier {
   }
 
   void updateBudget(Budget item) {
-    int index = _budgets.indexWhere((element) => element.id == item.id);
-    _budgets.replaceRange(index, index+1, [item]);
+    _budgets[_budgets.indexWhere((element) => element.id == item.id)] = item;
     notifyListeners();
   }
 
@@ -82,8 +80,7 @@ class AppState extends ChangeNotifier {
   }
 
   void updateCategory(Category item) {
-    int index = _categories.indexWhere((element) => element.id == item.id);
-    _categories.replaceRange(index, index+1, [item]);
+    _categories[_categories.indexWhere((element) => element.id == item.id)] = item;
     notifyListeners();
   }
 

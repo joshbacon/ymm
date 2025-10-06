@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/Models/configuration.dart';
+import 'package:flutter_iconpicker/Models/icon_pack.dart';
+import 'package:flutter_iconpicker/Models/icon_picker_icon.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart' as FlutterIconPicker;
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/state.dart';
+import 'package:ymm/widgets/colorpickerdialog.dart';
 
 class CategoryEditPanel extends StatefulWidget {
   final Category data;
@@ -18,8 +24,6 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
   late Category updatedCategory = widget.data.copyWith();
 
   late final TextEditingController _titleController = TextEditingController(text: widget.data.title);
-
-  // TODO: [BUDGET] : update the segment button to scroll in case there's a lot (fixed sized box)
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +58,73 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog<Color>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return ColorPickerDialog(color: updatedCategory.color);
+                        }
+                      ).then((newColor) {
+                        Category temp = updatedCategory.copyWith(color: newColor);
+                        widget.callback(temp);
+                        appState.updateCategory(temp);
+                        updatedCategory = temp;
+                      });
+                    },
+                    child: Card(
+                      color: updatedCategory.color.withAlpha(100),
+                      child: Center(
+                        heightFactor: 2,
+                        child: Icon(
+                          Icons.color_lens,
+                          color: updatedCategory.color,
+                          size: 36.0
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      IconPickerIcon? icon = await showIconPicker(
+                        context,
+                        configuration: SinglePickerConfiguration(
+                          iconPackModes: [IconPack.material]
+                        )
+                      );// ).then((newIcon) {
+                      //   Category temp = updatedCategory.copyWith(icon: Icon(newIcon?.data));
+                      //   widget.callback(temp);
+                      //   appState.updateCategory(temp);
+                      //   updatedCategory = temp;
+                      // });
+                        Category temp = updatedCategory.copyWith(icon: Icon(icon?.data));
+                        widget.callback(temp);
+                        appState.updateCategory(temp);
+                        updatedCategory = temp;
+                    },
+                    child: Card(
+                      elevation: 0.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Icon",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            Icon(
+                              updatedCategory.icon.icon
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
-                      // This throws an error but maay not see in the built apk?
-                      Navigator.pop(context);
                       Navigator.pop(context);
                       appState.removeCategory(updatedCategory);
                     },

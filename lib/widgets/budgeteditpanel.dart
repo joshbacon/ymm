@@ -112,105 +112,26 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                   ),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 5.0,
-                      children: [
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: Colors.grey.shade800,
-                            child: const Text('AB'),
-                          ),
-                          label: const Text('Aaron Burr'),
-                        ),
-                      ],
+                    child: SegmentedButton(
+                      multiSelectionEnabled: true,
+                      emptySelectionAllowed: true,
+                      // TODO: [BUDGET/CATE] if a category is edited, the "original" one stays in the budget but
+                      //                     it get's unselected in the update budget panel segment button.
+                      //                     Reselecting it puts the "new" one in (so it's duplicated) check the id's
+                      segments: appState.categories.map((cat) => ButtonSegment<Category>(
+                        value: cat,
+                        label: Text(cat.title, style: TextStyle(color: cat.color)),
+                        icon: Icon(cat.icon.icon, color: cat.color),
+                      )).toList(),
+                      selected: updatedBudget.categories.toSet(),
+                      showSelectedIcon: false,
+                      onSelectionChanged: (Set<Category> newCategories) {
+                        updatedBudget.setCategories(newCategories.toList());
+                        widget.callback(updatedBudget);
+                        appState.updateBudget(updatedBudget);
+                      },
                     ),
                   ),
-                  // SegmentedButton(
-                  //   multiSelectionEnabled: true,
-                  //   emptySelectionAllowed: true,
-                  //   segments: appState.categories.map((cat) => ButtonSegment<Category>(
-                  //     value: cat,
-                  //     label: Text(cat.title, style: TextStyle(color: cat.color)),
-                  //     icon: Icon(cat.icon.icon, color: cat.color),
-                  //   )).toList(),
-                  //   selected: updatedBudget.categories.toSet(),
-                  //   showSelectedIcon: false,
-                  //   onSelectionChanged: (Set<Category> newCategories) {
-                  //     updatedBudget.setCategories(newCategories.toList());
-                  //     widget.callback(updatedBudget);
-                  //     appState.updateBudget(updatedBudget);
-                  //   },
-                  // ),
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
