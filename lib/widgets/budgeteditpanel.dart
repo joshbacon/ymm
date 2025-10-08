@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
@@ -24,8 +23,6 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
 
   late final TextEditingController _nameController = TextEditingController(text: widget.data.name);
   late final TextEditingController _limitController = TextEditingController(text: widget.data.limit.toString());
-
-  // TODO: [BUDGET] : update the segment button to scroll in case there's a lot (fixed sized box)
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +132,8 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
-                      // This throws an error but maay not see in the built apk?
                       Navigator.pop(context);
-                      Navigator.pop(context);
-                      appState.removeBudget(updatedBudget);
+                      Navigator.pop(context, true);
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

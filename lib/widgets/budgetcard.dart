@@ -22,13 +22,17 @@ class BudgetCard extends StatelessWidget {
         double total = appState.transactionsByCategory(data.categories).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
         
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            final bool? wasDeleted = await Navigator.push(
               context,
-              MaterialPageRoute<void>(
+              MaterialPageRoute<bool>(
                 builder: (context) => BudgetViewPage(data: data),
               ),
             );
+            if (wasDeleted != null && wasDeleted) {
+              print("deleting");
+              appState.removeBudget(data);
+            }
           },
           child: Card(
             clipBehavior: Clip.hardEdge,

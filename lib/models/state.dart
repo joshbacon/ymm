@@ -8,8 +8,8 @@ class AppState extends ChangeNotifier {
 
   /// Internal, private state of the cart.
   final List<Transaction> _transactions = [
-    Transaction(1, "McDonalds", DateTime.now(), 11.93, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), null),
-    Transaction(2, "Sobeys", DateTime.now(), 43.87, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)), Subcategory()),
+    Transaction("1", "McDonalds", DateTime.now(), 11.93, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31))),
+    Transaction("2", "Sobeys", DateTime.now(), 43.87, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31))),
   ];
   final List<Budget> _budgets = [];
   final List<Category> _categories = [
@@ -89,17 +89,6 @@ class AppState extends ChangeNotifier {
     _seedColor = newColor;
     notifyListeners();
   }
-}
-
-
-
-
-class Subcategory {
-  int id = -1;
-  String title = "Groceries";
-  int parent = -1;
-  Icon icon = Icon(Icons.block_flipped);
-  Color color = Color.fromARGB(255, 54, 54, 54);
 }
 
 class Settings {

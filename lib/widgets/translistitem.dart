@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ymm/models/state.dart';
 import 'package:ymm/models/transactionmodel.dart';
+import 'package:ymm/widgets/newtransactionpanel.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction data;
@@ -8,40 +11,53 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: Theme.of(context).colorScheme.surfaceContainer,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0)
-      ),
-      leading: Stack(
-        alignment: Alignment.center,
-        children: [
-          Icon(
-            Icons.square_rounded,
-            color: data.category?.color.withAlpha(50),
-            size: 52.0,
+    return Consumer<AppState>(
+      builder: (context, appState, child) => GestureDetector(
+        onTap: () {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return NewTransactionPanel(data: data, isNew: false);
+            },
+          );
+        },
+        child: ListTile(
+          tileColor: Theme.of(context).colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0)
           ),
-          Icon(
-            data.category?.icon.icon,
-            color: data.category?.color,
-            size: 28.0,
+          leading: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                Icons.square_rounded,
+                color: data.category?.color.withAlpha(50),
+                size: 52.0,
+              ),
+              Icon(
+                data.category?.icon.icon,
+                color: data.category?.color,
+                size: 28.0,
+              ),
+            ],
           ),
-        ],
-      ),
-      title: Padding(
-        padding: EdgeInsets.symmetric(vertical: data.subcategory == null ? 13.0 : 0.0),
-        child: Text(
-          data.name,
-          style: Theme.of(context).textTheme.titleSmall,
+          title: Padding(
+            padding: EdgeInsets.symmetric(vertical: data.category == null ? 13.0 : 0.0),
+            child: Text(
+              data.name,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          subtitle: data.category != null ?
+            Text(
+              data.category?.title ?? "",
+            ) : null,
+          trailing: Text(
+            "\$${data.amount.toStringAsFixed(2)}",
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
         ),
-      ),
-      subtitle: data.subcategory != null ?
-        Text(
-          data.subcategory?.title ?? "",
-        ) : null,
-      trailing: Text(
-        "\$${data.amount.toStringAsFixed(2)}",
-        style: Theme.of(context).textTheme.titleSmall,
       ),
     );
   }

@@ -8,7 +8,7 @@ class Budget {
   bool _weekly;
 
   Budget(this._id, this._name, this._limit, this._categories, this._weekly);
-  Budget.empty() : _id = DateTime.now().toString(), _name = "New Budget", _limit = 0.0, _categories = [], _weekly = false;
+  Budget.empty() : _id = DateTime.now().toString(), _name = "", _limit = 0.0, _categories = [], _weekly = false;
 
   String get id => _id;
   String get name => _name;

@@ -7,7 +7,10 @@ import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/transactionmodel.dart';
 
 class NewTransactionPanel extends StatefulWidget {
-  const NewTransactionPanel({super.key});
+  final Transaction? data;
+  final bool isNew;
+
+  const NewTransactionPanel({super.key, this.data, required this.isNew});
 
   @override
   State<NewTransactionPanel> createState() => _NewTransactionPanelState();
@@ -15,14 +18,13 @@ class NewTransactionPanel extends StatefulWidget {
 
 class _NewTransactionPanelState extends State<NewTransactionPanel> {
 
-  DateTime date = DateTime.now();
-  final TextEditingController _nameController = TextEditingController(text: "");
-  final TextEditingController _amountController = TextEditingController(text: "");
-  Category category = Category.empty();
+  late DateTime date = widget.data != null ? widget.data!.date : DateTime.now();
+  late final TextEditingController _nameController = TextEditingController(text: widget.data != null ? widget.data!.name : "");
+  late final TextEditingController _amountController = TextEditingController(text: widget.data != null ? widget.data!.amount.toStringAsFixed(2): "");
+  late Category? category = widget.data?.category;
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<AppState>(
       builder: (context, appState, child) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -58,7 +60,7 @@ class _NewTransactionPanelState extends State<NewTransactionPanel> {
                           );
         
                           setState(() {
-                            date = pickedDate ?? date;
+                            if (pickedDate != null) date = pickedDate;
                           });
                         },
                       )
@@ -90,36 +92,60 @@ class _NewTransactionPanelState extends State<NewTransactionPanel> {
                       )
                     ],
                   ),
-                  SegmentedButton(
-                    emptySelectionAllowed: true,
-                    segments: appState.categories.map((cat) => ButtonSegment<Category>(
-                      value: cat,
-                      label: Text(cat.title, style: TextStyle(color: cat.color)),
-                      icon: Icon(cat.icon.icon, color: cat.color),
-                    )).toList(),
-                    selected: appState.categories.where((elem) => elem.id == category.id).isNotEmpty ? {appState.categories.firstWhere((elem) => elem.id == category.id)} : {},
-                    showSelectedIcon: false,
-                    onSelectionChanged: (newCategory) {
-                      setState(() {
-                        category = newCategory.first!;
-                      });
-                    },
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SegmentedButton(
+                      emptySelectionAllowed: true,
+                      // TODO: [BUDGET/CATE] if a category is edited, the "original" one stays in the budget but
+                      //                     it get's unselected in the update budget panel segment button.
+                      //                     Reselecting it puts the "new" one in (so it's duplicated) check the id's
+                      segments: appState.categories.map((cat) => ButtonSegment<Category>(
+                        value: cat,
+                        label: Text(cat.title, style: TextStyle(color: cat.color)),
+                        icon: Icon(cat.icon.icon, color: cat.color),
+                      )).toList(),
+                      selected: {appState.categories.firstWhere((elem) => elem.id == category!.id)},
+                      showSelectedIcon: false,
+                      onSelectionChanged: (newCategory) {
+                        if (newCategory.isNotEmpty) {
+                          print("${newCategory.first.id}, ${newCategory.first.title}, ${newCategory.first.icon}, ${newCategory.first.color}");
+                          print("${category!.id}, ${category!.title}, ${category!.icon}, ${category!.color}");
+                          setState(() {
+                            category = newCategory.first;
+                          });
+                          print("${category!.id}, ${category!.title}, ${category!.icon}, ${category!.color}");
+                        }
+                      },
+                    ),
                   ),
                   FilledButton(
                     onPressed: () {
-                      appState.addTransaction(
-                        Transaction(
-                          appState.transactions.last.id + 1,
-                          _nameController.text,
-                          date,
-                          double.parse(_amountController.text),
-                          category,
-                          null
-                        )
-                      );
+                      if (_nameController.text != "" && _amountController.text != "") {
+                        if (widget.isNew) {
+                          appState.addTransaction(
+                            Transaction(
+                              widget.data!.id,
+                              _nameController.text,
+                              date,
+                              double.parse(_amountController.text),
+                              category
+                            )
+                          );
+                        } else {
+                          appState.updateTransaction(
+                            Transaction(
+                              widget.data!.id,
+                              _nameController.text,
+                              date,
+                              double.parse(_amountController.text),
+                              category
+                            )
+                          );
+                        }
+                      }
                       Navigator.pop(context);
                     },
-                    child: Text("Add Transaction"),
+                    child: Text("Confirm"),
                   )
                 ],
               ),

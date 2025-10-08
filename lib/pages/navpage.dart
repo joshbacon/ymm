@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ymm/models/transactionmodel.dart';
 import 'package:ymm/pages/analysispage.dart';
 import 'package:ymm/pages/budgetpage.dart';
 import 'package:ymm/pages/homepage.dart';
@@ -36,7 +37,7 @@ class _YMMState extends State<YMM> {
                 context: context,
                 isScrollControlled: true,
                 builder: (BuildContext context) {
-                  return NewTransactionPanel();
+                  return NewTransactionPanel(data: Transaction.empty(), isNew: true);
                 },
               );
             },

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/configuration.dart';
-import 'package:flutter_iconpicker/Models/icon_pack.dart';
-import 'package:flutter_iconpicker/Models/icon_picker_icon.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart' as FlutterIconPicker;
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/categorymodel.dart';
