@@ -30,7 +30,6 @@ class BudgetCard extends StatelessWidget {
               ),
             );
             if (wasDeleted != null && wasDeleted) {
-              print("deleting");
               appState.removeBudget(data);
             }
           },
@@ -88,7 +87,8 @@ class BudgetCard extends StatelessWidget {
                   )
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, data.categories.isNotEmpty ? 0.0 : 8.0),
+                  // padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, data.categories.isNotEmpty ? 0.0 : 8.0),
+                  padding: EdgeInsets.only(bottom: 8.0),
                   child: Center(
                     child: Text(
                       "You can spend \$${(

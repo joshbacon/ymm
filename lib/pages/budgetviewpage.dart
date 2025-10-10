@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -62,128 +60,132 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
           ),
           body: Padding(
             padding: EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  updatedBudget.name,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                Text(
-                  "\$${updatedBudget.limit.toStringAsFixed(2)}",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                Text(
-                  updatedBudget.weekly ? "Weekly" : "Monthly",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                Text(
-                  updatedBudget.weekly ?
-                  "${DateFormat.MMMd().format(thisMonday)} - ${DateFormat.MMMd().format(thisMonday.add(Duration(days: 6)))}" :
-                  "${DateFormat.MMMd().format(DateTime(today.year, today.month, 1))} - ${DateFormat.MMMd().format(lastDayOfMonth)}",
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                SizedBox(height: 15.0),
-                Card(
-                  clipBehavior: Clip.hardEdge,
-                  color: Theme.of(context).colorScheme.surfaceBright,
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          right: constraints.maxWidth * (updatedBudget.limit == 0.0 ? 0 : ( 1 - (total / updatedBudget.limit))),
-                        ),
-                        child: Container(
-                          constraints: BoxConstraints(minHeight: 10.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary.withAlpha(200),
-                            shape: BoxShape.rectangle
-                          ),
-                        ),
-                      );
-                    },
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    updatedBudget.name,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                SizedBox(height: 15.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "\$${total.toStringAsFixed(2)} spent",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    Text(
-                      "\$${(
-                        (updatedBudget.limit - total) / (
-                          updatedBudget.weekly ?
-                          (today.weekday - DateTime.monday +1) :
-                          (lastDayOfMonth.day - today.day -1)
-                        )
-                      ).toStringAsFixed(2)}/day remaining",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-                Divider(),
-                Visibility(
-                  visible: updatedBudget.categories.isNotEmpty,
-                  child: Text(
-                    "Categories",
-                    style: Theme.of(context).textTheme.titleMedium,
+                  Text(
+                    "\$${updatedBudget.limit.toStringAsFixed(2)}",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                Visibility(
-                  visible: updatedBudget.categories.isNotEmpty,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: updatedBudget.categories.map((cat) => Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Icon(
-                            Icons.square_rounded,
-                            color: cat.color.withAlpha(50),
-                            size: 52.0,
+                  Text(
+                    updatedBudget.weekly ? "Weekly" : "Monthly",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Text(
+                    updatedBudget.weekly ?
+                    "${DateFormat.MMMd().format(thisMonday)} - ${DateFormat.MMMd().format(thisMonday.add(Duration(days: 6)))}" :
+                    "${DateFormat.MMMd().format(DateTime(today.year, today.month, 1))} - ${DateFormat.MMMd().format(lastDayOfMonth)}",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  SizedBox(height: 15.0),
+                  Card(
+                    clipBehavior: Clip.hardEdge,
+                    color: Theme.of(context).colorScheme.surfaceBright,
+                    child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            right: constraints.maxWidth * (updatedBudget.limit == 0.0 ? 0 : ( 1 - (total / updatedBudget.limit))),
                           ),
-                          Icon(
-                            cat.icon.icon,
-                            color: cat.color,
-                            size: 28.0,
+                          child: Container(
+                            constraints: BoxConstraints(minHeight: 10.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                              shape: BoxShape.rectangle
+                            ),
                           ),
-                        ],
-                      ),).toList(),
+                        );
+                      },
                     ),
                   ),
-                ),
-                Visibility(
-                  visible: updatedBudget.categories.isNotEmpty,
-                  child: Divider()
-                ),
-                Visibility(
-                  visible: filteredTransactions.isNotEmpty,
-                  child: Text(
-                    "Transactions",
-                    style: Theme.of(context).textTheme.titleMedium,
+                  SizedBox(height: 15.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "\$${total.toStringAsFixed(2)} spent",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      Text(
+                        "\$${(
+                          (updatedBudget.limit - total) / (
+                            updatedBudget.weekly ?
+                            (today.weekday - DateTime.monday +1) :
+                            (lastDayOfMonth.day - today.day -1)
+                          )
+                        ).toStringAsFixed(2)}/day remaining",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
                   ),
-                ),
-                Visibility(
-                  visible: filteredTransactions.isNotEmpty,
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(height: 3.0),
-                    shrinkWrap: true,
-                    itemCount: filteredTransactions.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return TransactionListItem(data: filteredTransactions[index]); 
-                    },
+                  Divider(),
+                  Visibility(
+                    visible: updatedBudget.categories.isNotEmpty,
+                    child: Text(
+                      "Categories",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
-                ),
-              ],
+                  Visibility(
+                    visible: updatedBudget.categories.isNotEmpty,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: updatedBudget.categories.map((cat) => Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Icon(
+                              Icons.square_rounded,
+                              color: appState.getCategory(cat).color.withAlpha(50),
+                              size: 52.0,
+                            ),
+                            Icon(
+                              appState.getCategory(cat).icon.icon,
+                              color: appState.getCategory(cat).color,
+                              size: 28.0,
+                            ),
+                          ],
+                        ),).toList(),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: updatedBudget.categories.isNotEmpty,
+                    child: Divider()
+                  ),
+                  Visibility(
+                    visible: filteredTransactions.isNotEmpty,
+                    child: Text(
+                      "Transactions",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  Visibility(
+                    visible: filteredTransactions.isNotEmpty,
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => const SizedBox(height: 3.0),
+                      itemCount: filteredTransactions.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TransactionListItem(data: filteredTransactions[index]); 
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -8,8 +8,8 @@ class AppState extends ChangeNotifier {
 
   /// Internal, private state of the cart.
   final List<Transaction> _transactions = [
-    Transaction("1", "McDonalds", DateTime.now(), 11.93, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31))),
-    Transaction("2", "Sobeys", DateTime.now(), 43.87, Category("1", "Food", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31))),
+    Transaction("1", "McDonalds", DateTime.now(), 11.93, "1"),
+    Transaction("2", "Sobeys", DateTime.now(), 43.87, "1"),
   ];
   final List<Budget> _budgets = [];
   final List<Category> _categories = [
@@ -31,8 +31,8 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeTransaction(Transaction item) {
-    _transactions.removeWhere((transaction) => transaction.id == item.id);
+  void removeTransaction(String id) {
+    _transactions.removeWhere((transaction) => transaction.id == id);
     notifyListeners();
   }
 
@@ -41,11 +41,11 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Transaction> transactionsByCategory(List<Category> categories) {
-    return _transactions.where((Transaction elem) => categories.map((Category cat) => cat.id).contains(elem.category?.id)).toList();
+  List<Transaction> transactionsByCategory(List<String> categories) {
+    return _transactions.where((Transaction elem) => categories.contains(elem.category)).toList();
   }
 
-  // TODO: [STATE] need a way to filter for dates as weel (need weekly and monthly for budgets, but also 3/6/12/YTD months for the analysis page)
+  // TODO: [STATE] need a way to filter for dates as well (need weekly and monthly for budgets, but also 3/6/12/YTD months for the analysis page)
   
 
   /// Budget functions
@@ -69,6 +69,10 @@ class AppState extends ChangeNotifier {
   }
 
   /// Category functions
+  Category getCategory(String? id) {
+    return _categories.firstWhere((elem) => elem.id == id);
+  }
+
   void addCategory(Category item) {
     _categories.add(item);
     notifyListeners();

@@ -4,7 +4,7 @@ import 'package:ymm/pages/analysispage.dart';
 import 'package:ymm/pages/budgetpage.dart';
 import 'package:ymm/pages/homepage.dart';
 import 'package:ymm/pages/transactionpage.dart';
-import 'package:ymm/widgets/newtransactionpanel.dart';
+import 'package:ymm/widgets/edittransactionpanel.dart';
 
 class YMM extends StatefulWidget {
   const YMM({super.key});
@@ -37,7 +37,7 @@ class _YMMState extends State<YMM> {
                 context: context,
                 isScrollControlled: true,
                 builder: (BuildContext context) {
-                  return NewTransactionPanel(data: Transaction.empty(), isNew: true);
+                  return EditTransactionPanel(data: Transaction.empty(), isNew: true);
                 },
               );
             },

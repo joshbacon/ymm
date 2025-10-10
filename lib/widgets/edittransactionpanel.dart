@@ -6,22 +6,22 @@ import 'package:ymm/models/state.dart';
 import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/transactionmodel.dart';
 
-class NewTransactionPanel extends StatefulWidget {
+class EditTransactionPanel extends StatefulWidget {
   final Transaction? data;
   final bool isNew;
 
-  const NewTransactionPanel({super.key, this.data, required this.isNew});
+  const EditTransactionPanel({super.key, this.data, required this.isNew});
 
   @override
-  State<NewTransactionPanel> createState() => _NewTransactionPanelState();
+  State<EditTransactionPanel> createState() => _EditTransactionPanelState();
 }
 
-class _NewTransactionPanelState extends State<NewTransactionPanel> {
+class _EditTransactionPanelState extends State<EditTransactionPanel> {
 
   late DateTime date = widget.data != null ? widget.data!.date : DateTime.now();
   late final TextEditingController _nameController = TextEditingController(text: widget.data != null ? widget.data!.name : "");
   late final TextEditingController _amountController = TextEditingController(text: widget.data != null ? widget.data!.amount.toStringAsFixed(2): "");
-  late Category? category = widget.data?.category;
+  late String? category = widget.data?.category;
 
   @override
   Widget build(BuildContext context) {
@@ -96,24 +96,18 @@ class _NewTransactionPanelState extends State<NewTransactionPanel> {
                     scrollDirection: Axis.horizontal,
                     child: SegmentedButton(
                       emptySelectionAllowed: true,
-                      // TODO: [BUDGET/CATE] if a category is edited, the "original" one stays in the budget but
-                      //                     it get's unselected in the update budget panel segment button.
-                      //                     Reselecting it puts the "new" one in (so it's duplicated) check the id's
                       segments: appState.categories.map((cat) => ButtonSegment<Category>(
                         value: cat,
                         label: Text(cat.title, style: TextStyle(color: cat.color)),
                         icon: Icon(cat.icon.icon, color: cat.color),
                       )).toList(),
-                      selected: {appState.categories.firstWhere((elem) => elem.id == category!.id)},
+                      selected: category != null ? {appState.categories.firstWhere((elem) => elem.id == category)} : {},
                       showSelectedIcon: false,
                       onSelectionChanged: (newCategory) {
                         if (newCategory.isNotEmpty) {
-                          print("${newCategory.first.id}, ${newCategory.first.title}, ${newCategory.first.icon}, ${newCategory.first.color}");
-                          print("${category!.id}, ${category!.title}, ${category!.icon}, ${category!.color}");
                           setState(() {
-                            category = newCategory.first;
+                            category = newCategory.first.id;
                           });
-                          print("${category!.id}, ${category!.title}, ${category!.icon}, ${category!.color}");
                         }
                       },
                     ),
@@ -146,6 +140,15 @@ class _NewTransactionPanelState extends State<NewTransactionPanel> {
                       Navigator.pop(context);
                     },
                     child: Text("Confirm"),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      if (!widget.isNew) {
+                        appState.removeTransaction(widget.data!.id);
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Text("Delete"),
                   )
                 ],
               ),

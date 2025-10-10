@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/state.dart';
 import 'package:ymm/models/transactionmodel.dart';
-import 'package:ymm/widgets/newtransactionpanel.dart';
+import 'package:ymm/widgets/edittransactionpanel.dart';
 
 class TransactionListItem extends StatelessWidget {
   final Transaction data;
@@ -18,7 +18,7 @@ class TransactionListItem extends StatelessWidget {
             context: context,
             isScrollControlled: true,
             builder: (BuildContext context) {
-              return NewTransactionPanel(data: data, isNew: false);
+              return EditTransactionPanel(data: data, isNew: false);
             },
           );
         },
@@ -32,12 +32,12 @@ class TransactionListItem extends StatelessWidget {
             children: [
               Icon(
                 Icons.square_rounded,
-                color: data.category?.color.withAlpha(50),
+                color: appState.getCategory(data.category).color.withAlpha(50),
                 size: 52.0,
               ),
               Icon(
-                data.category?.icon.icon,
-                color: data.category?.color,
+                appState.getCategory(data.category).icon.icon,
+                color: appState.getCategory(data.category).color,
                 size: 28.0,
               ),
             ],
@@ -51,7 +51,7 @@ class TransactionListItem extends StatelessWidget {
           ),
           subtitle: data.category != null ?
             Text(
-              data.category?.title ?? "",
+              appState.getCategory(data.category).title,
             ) : null,
           trailing: Text(
             "\$${data.amount.toStringAsFixed(2)}",

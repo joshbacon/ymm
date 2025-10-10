@@ -37,7 +37,6 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                 mainAxisSize: MainAxisSize.max,
                 spacing: 10.0,
                 children: [
-                  //name
                   TextField(
                     controller: _titleController,
                     decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Name'),
@@ -89,16 +88,11 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                         configuration: SinglePickerConfiguration(
                           iconPackModes: [IconPack.material]
                         )
-                      );// ).then((newIcon) {
-                      //   Category temp = updatedCategory.copyWith(icon: Icon(newIcon?.data));
-                      //   widget.callback(temp);
-                      //   appState.updateCategory(temp);
-                      //   updatedCategory = temp;
-                      // });
-                        Category temp = updatedCategory.copyWith(icon: Icon(icon?.data));
-                        widget.callback(temp);
-                        appState.updateCategory(temp);
-                        updatedCategory = temp;
+                      );
+                      Category temp = updatedCategory.copyWith(icon: Icon(icon?.data));
+                      widget.callback(temp);
+                      appState.updateCategory(temp);
+                      updatedCategory = temp;
                     },
                     child: Card(
                       elevation: 0.0,

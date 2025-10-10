@@ -26,6 +26,7 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<AppState>(
       builder: (context, appState, child) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -96,7 +97,7 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                         icon: Icon(Icons.calendar_view_month),
                       ),
                     ],
-                    selected: {appState.budgets.firstWhere((elem) => elem.id == widget.data.id).weekly},
+                    selected: {appState.budgets.firstWhere((elem) => elem.id == widget.data.id, orElse: () => Budget.empty()).weekly},
                     showSelectedIcon: false,
                     onSelectionChanged: (newSelection) {
                       updatedBudget.setWeekly(newSelection.first);
@@ -112,18 +113,15 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                     child: SegmentedButton(
                       multiSelectionEnabled: true,
                       emptySelectionAllowed: true,
-                      // TODO: [BUDGET/CATE] if a category is edited, the "original" one stays in the budget but
-                      //                     it get's unselected in the update budget panel segment button.
-                      //                     Reselecting it puts the "new" one in (so it's duplicated) check the id's
                       segments: appState.categories.map((cat) => ButtonSegment<Category>(
                         value: cat,
                         label: Text(cat.title, style: TextStyle(color: cat.color)),
                         icon: Icon(cat.icon.icon, color: cat.color),
                       )).toList(),
-                      selected: updatedBudget.categories.toSet(),
+                      selected: updatedBudget.categories.map((id) => appState.categories.firstWhere((c) => c.id == id)).toSet(),
                       showSelectedIcon: false,
                       onSelectionChanged: (Set<Category> newCategories) {
-                        updatedBudget.setCategories(newCategories.toList());
+                        updatedBudget.setCategories(newCategories.map((c) => c.id).toList());
                         widget.callback(updatedBudget);
                         appState.updateBudget(updatedBudget);
                       },
@@ -132,6 +130,7 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
+                      // TODO: [BUDGET] deleting does not work, shows an error onscreen
                       Navigator.pop(context);
                       Navigator.pop(context, true);
                     },
