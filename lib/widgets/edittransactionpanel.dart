@@ -146,6 +146,7 @@ class _EditTransactionPanelState extends State<EditTransactionPanel> {
                       if (!widget.isNew) {
                         appState.removeTransaction(widget.data!.id);
                       }
+                      appState.sortTransactions();
                       Navigator.pop(context);
                     },
                     child: Text("Delete"),

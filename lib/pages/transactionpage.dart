@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/state.dart';
 import 'package:ymm/widgets/translistitem.dart';
@@ -11,9 +12,6 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-
-  // TODO: [TRANS] add separators to show the date
-  // TODO: [TRANS] sort the transactions by date
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,24 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 shrinkWrap: true,
                 itemCount: appState.transactions.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return TransactionListItem(data: appState.transactions[index],);
+                  if (index == 0 || 
+                    appState.transactions[index].date.year != appState.transactions[index-1].date.year ||
+                    appState.transactions[index].date.month != appState.transactions[index-1].date.month ||
+                    appState.transactions[index].date.day != appState.transactions[index-1].date.day
+                  ) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          DateFormat.MMMd().format(appState.transactions[index].date),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        SizedBox(height: 5.0),
+                        TransactionListItem(data: appState.transactions[index])
+                      ],
+                    );
+                  }
+                  return TransactionListItem(data: appState.transactions[index]);
                 }
               ),
             ],

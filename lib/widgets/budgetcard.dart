@@ -19,7 +19,10 @@ class BudgetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) {
-        double total = appState.transactionsByCategory(data.categories).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
+        double total = appState.filteredTransactions(
+          range: data.weekly ? "week" : "month",
+          categories: data.categories
+        ).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
         
         return GestureDetector(
           onTap: () async {

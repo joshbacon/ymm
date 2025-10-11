@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
+import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/state.dart';
 import 'package:ymm/models/transactionmodel.dart';
 import 'package:ymm/widgets/budgeteditpanel.dart';
@@ -29,8 +30,10 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
 
     return Consumer<AppState>(
       builder: (context, appState, child) {
-        // TODO: [BUDGET] also account for if it's weekly or monthly when querying transactions
-        List<Transaction> filteredTransactions = appState.transactionsByCategory(updatedBudget.categories);
+        List<Transaction> filteredTransactions = appState.filteredTransactions(
+          range: updatedBudget.weekly ? "week" : "month",
+          categories: updatedBudget.categories
+        );
         double total = filteredTransactions.fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
         
         return Scaffold(
@@ -143,21 +146,32 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: updatedBudget.categories.map((cat) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Icon(
-                              Icons.square_rounded,
-                              color: appState.getCategory(cat).color.withAlpha(50),
-                              size: 52.0,
-                            ),
-                            Icon(
-                              appState.getCategory(cat).icon.icon,
-                              color: appState.getCategory(cat).color,
-                              size: 28.0,
-                            ),
-                          ],
-                        ),).toList(),
+                        children: updatedBudget.categories.map((cat) {
+                          Category data = appState.getCategory(cat);
+                          return Column(
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.square_rounded,
+                                    color: data.color.withAlpha(50),
+                                    size: 52.0,
+                                  ),
+                                  Icon(
+                                    data.icon.icon,
+                                    color: data.color,
+                                    size: 28.0,
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                data.title,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),
@@ -180,7 +194,24 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                       separatorBuilder: (context, index) => const SizedBox(height: 3.0),
                       itemCount: filteredTransactions.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return TransactionListItem(data: filteredTransactions[index]); 
+                        if (index == 0 || 
+                          appState.transactions[index].date.year != appState.transactions[index-1].date.year ||
+                          appState.transactions[index].date.month != appState.transactions[index-1].date.month ||
+                          appState.transactions[index].date.day != appState.transactions[index-1].date.day
+                        ) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                DateFormat.MMMd().format(filteredTransactions[index].date),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              SizedBox(height: 5.0),
+                              TransactionListItem(data: filteredTransactions[index])
+                            ],
+                          );
+                        }
+                        return TransactionListItem(data: filteredTransactions[index]);
                       },
                     ),
                   ),
