@@ -89,7 +89,7 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                           iconPackModes: [IconPack.material]
                         )
                       );
-                      Category temp = updatedCategory.copyWith(icon: Icon(icon?.data));
+                      Category temp = updatedCategory.copyWith(icon: icon?.data);
                       widget.callback(temp);
                       appState.updateCategory(temp);
                       updatedCategory = temp;
@@ -106,7 +106,7 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             Icon(
-                              updatedCategory.icon.icon
+                              updatedCategory.icon
                             )
                           ],
                         ),
@@ -118,6 +118,7 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                     onPressed: () {
                       Navigator.pop(context);
                       appState.removeCategory(updatedCategory);
+                      // TODO [CATEGORIES] remove category from any transactions and budgets on delete
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

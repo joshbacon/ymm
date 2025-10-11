@@ -40,6 +40,7 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
             leading: IconButton(
+              // TODO [BUDGET] need to check if budget data is "empty" (still has all the default values), and delete it if so
               onPressed: () => Navigator.pop(context),
               icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary)
             ),
@@ -146,6 +147,7 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
+                        spacing: 3.0,
                         children: updatedBudget.categories.map((cat) {
                           Category data = appState.getCategory(cat);
                           return Column(
@@ -159,7 +161,7 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                                     size: 52.0,
                                   ),
                                   Icon(
-                                    data.icon.icon,
+                                    data.icon,
                                     color: data.color,
                                     size: 28.0,
                                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/state.dart';
+import 'package:ymm/widgets/filterpanel.dart';
 import 'package:ymm/widgets/translistitem.dart';
 
 class TransactionsPage extends StatefulWidget {
@@ -22,9 +23,30 @@ class _TransactionsPageState extends State<TransactionsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                "Transactions",
-                style: Theme.of(context).textTheme.titleLarge,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Transactions",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        isDismissible: false,
+                        builder: (BuildContext context) {
+                          return FilterPanel();
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.filter_alt_outlined,
+                      color: Theme.of(context).colorScheme.primary,
+                    )
+                  )
+                ],
               ),
               ListView.separated(
                 separatorBuilder: (context, index) => const SizedBox(height: 3.0),

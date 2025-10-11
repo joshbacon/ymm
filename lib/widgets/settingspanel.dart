@@ -11,6 +11,8 @@ class SettingsPanel extends StatefulWidget {
   State<SettingsPanel> createState() => _SettingsPanelState();
 }
 
+// TODO [SETTINGS] implement account balancer functionality
+
 class _SettingsPanelState extends State<SettingsPanel> {
   final TextEditingController _amountController = TextEditingController(text: "");
   

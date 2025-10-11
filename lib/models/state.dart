@@ -4,20 +4,35 @@ import 'package:ymm/models/budgetmodel.dart';
 import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/transactionmodel.dart';
 
+// TODO [STATE] save to local storage on change
+// TODO [STATE] read from local storage on app load
+
 class AppState extends ChangeNotifier {
 
   /// Internal, private state of the cart.
   final List<Transaction> _transactions = [
-    Transaction("3", "Sobeys", DateTime.now(), 43.87, "1"),
-    Transaction("2", "Petro Can", DateTime.now().subtract(Duration(days: 8)), 83.72, "1"),
-    Transaction("1", "McDonalds", DateTime.now().subtract(Duration(days: 12)), 11.93, "1"),
+    Transaction("3", "Sobeys", DateTime.now(), 43.87, "71"),
+    Transaction("2", "Petro Can", DateTime.now().subtract(Duration(days: 8)), 83.72, "41"),
+    Transaction("1", "McDonalds", DateTime.now().subtract(Duration(days: 12)), 11.93, "71"),
   ];
   final List<Budget> _budgets = [
-    Budget("1", "Food", 300.0, ["1"], false)
+    Budget("1", "Food", 300.0, ["71"], false)
   ];
   final List<Category> _categories = [
-    Category("1", "Groceries", Icon(Icons.local_grocery_store), const Color.fromARGB(255, 52, 204, 31)),
-    Category("2", "Gas", Icon(Icons.local_gas_station), const Color.fromARGB(255, 31, 92, 204))
+    Category("71", "Groceries", Icons.local_grocery_store, const Color.fromARGB(255, 52, 204, 31)),
+    Category("41", "Gas", Icons.local_gas_station, const Color.fromARGB(255, 52, 204, 31)),
+    Category("2", "Takeout", Icons.local_gas_station, const Color.fromARGB(255, 31, 92, 204)),
+    Category("11", "Liquor", Icons.local_grocery_store, const Color.fromARGB(255, 194, 43, 88)),
+    Category("21", "Insurance", Icons.local_gas_station, const Color.fromARGB(255, 204, 31, 190)),
+    Category("12", "Clothes", Icons.local_grocery_store, const Color.fromARGB(255, 177, 174, 14)),
+    Category("22", "Income", Icons.local_gas_station, const Color.fromARGB(255, 204, 164, 31)),
+    Category("13", "Hobbies", Icons.local_grocery_store, const Color.fromARGB(255, 52, 204, 31)),
+    Category("24", "Rent", Icons.local_gas_station, const Color.fromARGB(255, 31, 92, 204)),
+    Category("15", "Phone", Icons.local_grocery_store, const Color.fromARGB(255, 52, 204, 31)),
+    Category("26", "School", Icons.local_gas_station, const Color.fromARGB(255, 31, 92, 204)),
+    Category("17", "Spending", Icons.local_grocery_store, const Color.fromARGB(255, 52, 204, 31)),
+    Category("28", "Dividend", Icons.local_gas_station, const Color.fromARGB(255, 31, 92, 204)),
+    Category("20", "Car Maintenance", Icons.local_gas_station, const Color.fromARGB(255, 31, 92, 204))
   ];
 
   Color _seedColor = Color.fromARGB(255, 192, 34, 231);

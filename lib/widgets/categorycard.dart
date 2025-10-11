@@ -52,7 +52,7 @@ class _CategoryCardState extends State<CategoryCard> {
                     size: 52.0,
                   ),
                   Icon(
-                    widget.data.icon.icon,
+                    widget.data.icon,
                     color: widget.data.color,
                     size: 28.0,
                   ),

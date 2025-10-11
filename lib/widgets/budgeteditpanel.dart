@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
-import 'package:ymm/models/categorymodel.dart';
 import 'package:ymm/models/state.dart';
 
 class BudgetEditPanel extends StatefulWidget {
@@ -32,7 +31,7 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SizedBox(
           height: 500,
-          child: Center(
+          child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 75.0),
               child: Column(
@@ -108,29 +107,68 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                       });
                     },
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SegmentedButton(
-                      multiSelectionEnabled: true,
-                      emptySelectionAllowed: true,
-                      segments: appState.categories.map((cat) => ButtonSegment<Category>(
-                        value: cat,
-                        label: Text(cat.title, style: TextStyle(color: cat.color)),
-                        icon: Icon(cat.icon.icon, color: cat.color),
-                      )).toList(),
-                      selected: updatedBudget.categories.map((id) => appState.categories.firstWhere((c) => c.id == id)).toSet(),
-                      showSelectedIcon: false,
-                      onSelectionChanged: (Set<Category> newCategories) {
-                        updatedBudget.setCategories(newCategories.map((c) => c.id).toList());
+                  Wrap(
+                    spacing: 5.0,
+                    alignment: WrapAlignment.center,
+                    children: appState.categories.map((cat) => OutlinedButton(
+                      onPressed: () {
+                        List<String> temp = [...updatedBudget.categories];
+                        if (temp.contains(cat.id)) {
+                          temp.remove(cat.id);
+                        } else {
+                          temp.add(cat.id);
+                        }
+                        updatedBudget.setCategories(temp);
                         widget.callback(updatedBudget);
                         appState.updateBudget(updatedBudget);
                       },
-                    ),
+                      style: ButtonStyle(
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        backgroundColor: WidgetStateProperty.all<Color>(
+                          cat.color.withAlpha(updatedBudget.categories.contains(cat.id) ? 50 : 0)
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            cat.icon,
+                            color: cat.color,
+                            size: 24.0,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(3, 3),
+                                blurRadius: 6.0,
+                                color: Colors.black
+                              )
+                            ]
+                          ),
+                          Text(
+                            cat.title,
+                            style: TextStyle(
+                              color: cat.color,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(3, 3),
+                                  blurRadius: 6.0,
+                                  color: Colors.black
+                                )
+                              ]
+                            ),
+                          ),
+                        ],
+                      ),
+                    )).toList(),
                   ),
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
-                      // TODO: [BUDGET] deleting does not work, shows an error onscreen
+                      // TODO [BUDGET] deleting does not work, shows an error onscreen
                       Navigator.pop(context);
                       Navigator.pop(context, true);
                     },

@@ -9,7 +9,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// TODO [HOME] add chart
+// - net worth graph from the last month (today to same day of last month inclusive)
 // https://pub.dev/packages/fl_chart
+
+// TODO [HOME] add visibility toggle to networth (default to hidden)
+// - replace dollar characters with * (one to one so you can see the number of digits)
+// - hide the chart axis labels
 
 class _HomePageState extends State<HomePage> {
   @override

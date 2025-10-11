@@ -36,7 +36,7 @@ class TransactionListItem extends StatelessWidget {
                 size: 52.0,
               ),
               Icon(
-                appState.getCategory(data.category).icon.icon,
+                appState.getCategory(data.category).icon,
                 color: appState.getCategory(data.category).color,
                 size: 28.0,
               ),
