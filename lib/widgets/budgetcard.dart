@@ -90,7 +90,29 @@ class BudgetCard extends StatelessWidget {
                   )
                 ),
                 Padding(
-                  // padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, data.categories.isNotEmpty ? 0.0 : 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Card(
+                    clipBehavior: Clip.hardEdge,
+                    color: Theme.of(context).colorScheme.surfaceBright,
+                    child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            right: constraints.maxWidth * (data.limit == 0.0 ? 0 : ( 1 - (total / data.limit))),
+                          ),
+                          child: Container(
+                            constraints: BoxConstraints(minHeight: 10.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                              shape: BoxShape.rectangle
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
                   child: Center(
                     child: Text(
@@ -105,30 +127,6 @@ class BudgetCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Do we want this?????
-                // Visibility(
-                //   visible: data.categories.isNotEmpty,
-                //   child: SingleChildScrollView(
-                //     scrollDirection: Axis.horizontal,
-                //     child: Row(
-                //       children: data.categories.map((cat) => Stack(
-                //         alignment: Alignment.center,
-                //         children: [
-                //           Icon(
-                //             Icons.square_rounded,
-                //             color: cat.color.withAlpha(50),
-                //             size: 52.0,
-                //           ),
-                //           Icon(
-                //             cat.icon.icon,
-                //             color: cat.color,
-                //             size: 28.0,
-                //           ),
-                //         ],
-                //       ),).toList(),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

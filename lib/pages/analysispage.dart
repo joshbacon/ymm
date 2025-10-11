@@ -10,11 +10,7 @@ class AnalysisPage extends StatefulWidget {
 class _AnalysisPageState extends State<AnalysisPage> {
 
   // TODO [ANALYSIS]
-  // - show total spent vs sum of budget amounts in range
-  // - show total and average difference to budget as dollar amount and percentage
-  // - show how long you can last with no income based on daily average spending history
-  // - heat map
-  // - radar chart for budgets
+  // make everything below dynamic
 
   String selectedRange = "3m";
 
@@ -58,7 +54,77 @@ class _AnalysisPageState extends State<AnalysisPage> {
                   selectedRange = newSelection.first.toString();
                 });
               },
-            )
+            ),
+            Column(
+              children: [
+                Text(
+                  "\$100.00 (33%)",
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  "over budget",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: Column(
+                      children: [
+                        Text("Total Spent"),
+                        Text("\$400.00"),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                    child: Column(
+                      children: [
+                        Text("Budgeted Amount"),
+                        Text("\$300.00"),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Text(
+              "You can spend",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              "\$127.43 /day",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text(
+              "before you run out.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              "With average spending, you can last",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              "67 days",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Text("radar chart for budgets"),
+            Text("show line chart for budgets"),
+            Text("show pie chart for budgets"),
+            Text("show dollar and percent over/under budget for each one"),
           ],
         ),
       ),

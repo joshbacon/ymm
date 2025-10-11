@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 // TODO [HOME] add chart
 // - net worth graph from the last month (today to same day of last month inclusive)
+// - heat map from the last month (today to same day of last month inclusive)
 // https://pub.dev/packages/fl_chart
 
 // TODO [HOME] add visibility toggle to networth (default to hidden)
