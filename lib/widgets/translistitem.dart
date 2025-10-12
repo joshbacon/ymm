@@ -11,6 +11,7 @@ class TransactionListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<AppState>(
       builder: (context, appState, child) => GestureDetector(
         onTap: () {
@@ -43,7 +44,7 @@ class TransactionListItem extends StatelessWidget {
             ],
           ),
           title: Padding(
-            padding: EdgeInsets.symmetric(vertical: data.category == null ? 13.0 : 0.0),
+            padding: EdgeInsets.symmetric(vertical: data.category == "" ? 13.0 : 0.0),
             child: Text(
               data.name,
               style: Theme.of(context).textTheme.titleSmall,

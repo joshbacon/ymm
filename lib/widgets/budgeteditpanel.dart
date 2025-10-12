@@ -33,13 +33,12 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
           height: 500,
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 75.0),
+              padding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 75.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.max,
                 spacing: 10.0,
                 children: [
-                  //name
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'Name'),
@@ -57,7 +56,6 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                   ),
-                  //limit
                   TextField(
                     controller: _limitController,
                     keyboardType: TextInputType.number,
@@ -82,7 +80,6 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                       )
                     ],
                   ),
-                  //weekly/month
                   SegmentedButton(
                     segments: [
                       ButtonSegment(
@@ -168,7 +165,6 @@ class _BudgetEditPanelState extends State<BudgetEditPanel> {
                   Divider(),
                   OutlinedButton(
                     onPressed: () {
-                      // TODO [BUDGET] deleting does not work, shows an error onscreen
                       Navigator.pop(context);
                       Navigator.pop(context, true);
                     },

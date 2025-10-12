@@ -36,6 +36,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                   "Categories",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
+                SizedBox(height: 5.0),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),

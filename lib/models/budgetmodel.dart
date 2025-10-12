@@ -22,4 +22,8 @@ class Budget {
   Budget copyWith({String? name, double? limit, List<String>? categories, bool? weekly}) {
     return Budget(_id, name ?? _name, limit ?? _limit, categories ?? _categories, weekly ?? _weekly);
   }
+
+  bool isEmpty() {
+    return _name == "" && _limit == 0.0 && categories.isEmpty && !_weekly;
+  }
 }

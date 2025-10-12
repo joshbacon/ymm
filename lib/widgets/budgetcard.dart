@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
+import 'package:ymm/models/transactionfilters.dart';
 import 'package:ymm/models/state.dart';
 import 'package:ymm/pages/budgetviewpage.dart';
 
@@ -19,10 +20,19 @@ class BudgetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) {
+        TransactionFilters temp = 
+          TransactionFilters(
+            range: data.weekly ? "week" : "month",
+            categories: data.categories
+          );
         double total = appState.filteredTransactions(
-          range: data.weekly ? "week" : "month",
-          categories: data.categories
+          temp
         ).fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
+
+        Color? lerped;
+        for (Color c in appState.categories.where((c) => data.categories.contains(c.id)).map((c) => c.color)) {
+          lerped = Color.lerp(lerped, c, 0.5);
+        }
         
         return GestureDetector(
           onTap: () async {
@@ -43,14 +53,7 @@ class BudgetCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.primary.withAlpha(150),
-                        Theme.of(context).colorScheme.secondary.withAlpha(150)
-                      ]
-                    )
-                  ),
+                  color: lerped ?? Theme.of(context).colorScheme.primary.withAlpha(175),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -59,13 +62,17 @@ class BudgetCard extends StatelessWidget {
                         Text(
                           data.name,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary
+                            shadows: [
+                              Shadow(offset: Offset(2.0, 2.0), blurRadius: 10.0, color: Colors.black)
+                            ]
                           ),
                         ),
                         Text(
                           "Limit of \$${data.limit.toStringAsFixed(2)}",
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary
+                            shadows: [
+                              Shadow(offset: Offset(2.0, 2.0), blurRadius: 10.0, color: Colors.black)
+                            ]
                           ),
                         )
                       ],

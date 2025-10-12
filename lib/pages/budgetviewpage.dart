@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ymm/models/budgetmodel.dart';
 import 'package:ymm/models/categorymodel.dart';
+import 'package:ymm/models/transactionfilters.dart';
 import 'package:ymm/models/state.dart';
 import 'package:ymm/models/transactionmodel.dart';
 import 'package:ymm/widgets/budgeteditpanel.dart';
@@ -31,8 +32,10 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
     return Consumer<AppState>(
       builder: (context, appState, child) {
         List<Transaction> filteredTransactions = appState.filteredTransactions(
-          range: updatedBudget.weekly ? "week" : "month",
-          categories: updatedBudget.categories
+          TransactionFilters(
+            range: updatedBudget.weekly ? "week" : "month",
+            categories: updatedBudget.categories
+          )
         );
         double total = filteredTransactions.fold({"amount": 0.0}, (a, b) => {"amount": a["amount"]! + b.amount})["amount"]!;
         
@@ -40,8 +43,10 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
             leading: IconButton(
-              // TODO [BUDGET] need to check if budget data is "empty" (still has all the default values), and delete it if so
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                bool delete = updatedBudget.isEmpty();
+                Navigator.pop(context, delete);
+              },
               icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onPrimary)
             ),
             actions: [
@@ -117,7 +122,7 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "\$${total.toStringAsFixed(2)} spent",
+                        "\$${total.toStringAsFixed(2)} so far",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
@@ -135,13 +140,6 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                     ],
                   ),
                   Divider(),
-                  Visibility(
-                    visible: updatedBudget.categories.isNotEmpty,
-                    child: Text(
-                      "Categories",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
                   Visibility(
                     visible: updatedBudget.categories.isNotEmpty,
                     child: SingleChildScrollView(
@@ -167,10 +165,6 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                data.title,
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
                             ],
                           );
                         }).toList(),
@@ -183,13 +177,6 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                   ),
                   Visibility(
                     visible: filteredTransactions.isNotEmpty,
-                    child: Text(
-                      "Transactions",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  Visibility(
-                    visible: filteredTransactions.isNotEmpty,
                     child: ListView.separated(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -197,18 +184,19 @@ class _BudgetViewPageState extends State<BudgetViewPage> {
                       itemCount: filteredTransactions.length,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0 || 
-                          appState.transactions[index].date.year != appState.transactions[index-1].date.year ||
-                          appState.transactions[index].date.month != appState.transactions[index-1].date.month ||
-                          appState.transactions[index].date.day != appState.transactions[index-1].date.day
+                          filteredTransactions[index].date.year != filteredTransactions[index-1].date.year ||
+                          filteredTransactions[index].date.month != filteredTransactions[index-1].date.month ||
+                          filteredTransactions[index].date.day != filteredTransactions[index-1].date.day
                         ) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              SizedBox(height: 2.0),
                               Text(
                                 DateFormat.MMMd().format(filteredTransactions[index].date),
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
-                              SizedBox(height: 5.0),
+                              SizedBox(height: 3.0),
                               TransactionListItem(data: filteredTransactions[index])
                             ],
                           );

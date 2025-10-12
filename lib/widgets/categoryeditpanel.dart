@@ -118,7 +118,6 @@ class _CategoryEditPanelState extends State<CategoryEditPanel> {
                     onPressed: () {
                       Navigator.pop(context);
                       appState.removeCategory(updatedCategory);
-                      // TODO [CATEGORIES] remove category from any transactions and budgets on delete
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

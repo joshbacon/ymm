@@ -11,15 +11,18 @@ class AddBudgetCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) => GestureDetector(
-        onTap: () {
+        onTap: () async {
           Budget newBudget = Budget.empty();
           appState.addBudget(newBudget);
-          Navigator.push(
+          final bool? wasDeleted = await Navigator.push(
             context,
-            MaterialPageRoute<void>(
-              builder: (context) => BudgetViewPage(data: newBudget)
+            MaterialPageRoute<bool>(
+              builder: (context) => BudgetViewPage(data: newBudget),
             ),
           );
+          if (wasDeleted != null && wasDeleted) {
+            appState.removeBudget(newBudget);
+          }
         },
         child: Card(
           clipBehavior: Clip.hardEdge,

@@ -1,37 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:ymm/models/transactionfilters.dart';
 import 'package:ymm/models/state.dart';
 
 class FilterPanel extends StatefulWidget {
-  const FilterPanel({super.key});
+  final TransactionFilters filters;
+
+  const FilterPanel(this.filters, {super.key});
 
   @override
   State<FilterPanel> createState() => _FilterPanelState();
 }
 
 class _FilterPanelState extends State<FilterPanel> {
-  // TODO [TRANS] implement filter functionality
-  // - search by name
-  // - date range
-  // - category
-  // - above/below certain amounts
 
-  late final TextEditingController _searchController = TextEditingController(text: "");
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  List<String> selectedCategories = [];
+  late final TextEditingController _searchController = TextEditingController(text: widget.filters.searchText);
+  late DateTime startDate = widget.filters.startDate ?? DateTime.now();
+  late DateTime endDate = widget.filters.endDate ?? DateTime.now();
+  late List<String> categories = widget.filters.categories;
 
   void clearFilters() {
-    _searchController.text = "";
-    startDate = DateTime.now();
-    endDate = DateTime.now();
-    selectedCategories = [];
-    Navigator.pop(context);// probably need a toggle in here to indicate a reset
+    Navigator.pop(context, TransactionFilters.empty());
   }
 
   void applyFilters() {
-    // pass the filter values back and requery the app state for filtered transactions on TranstionPage
+    Navigator.pop(context, widget.filters);
   }
 
   @override
@@ -78,10 +72,8 @@ class _FilterPanelState extends State<FilterPanel> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(border: OutlineInputBorder(), labelText: 'search'),
-                  onEditingComplete: () {
-      
-                  },
                   onTapOutside:(event) {
+                    widget.filters.setSearch(_searchController.text);
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                 ),
@@ -98,6 +90,7 @@ class _FilterPanelState extends State<FilterPanel> {
                             lastDate: DateTime(2050),
                           );
                           if (pickedDate != null && (pickedDate.isBefore(endDate) || pickedDate.isAtSameMomentAs(endDate))) {
+                            widget.filters.setStartDate(pickedDate);
                             setState(() {
                               startDate = pickedDate;
                             });
@@ -120,6 +113,7 @@ class _FilterPanelState extends State<FilterPanel> {
                             lastDate: DateTime(2050),
                           );
                           if (pickedDate != null && (pickedDate.isAfter(startDate) || pickedDate.isAtSameMomentAs(startDate))) {
+                            widget.filters.setEndDate(pickedDate);
                             setState(() {
                               endDate = pickedDate;
                             });
@@ -139,21 +133,21 @@ class _FilterPanelState extends State<FilterPanel> {
                   children: appState.categories.map((cat) => OutlinedButton(
                     onPressed: () {
                       setState(() {
-                        if (selectedCategories.contains(cat.id)) {
-                          selectedCategories.remove(cat.id);
+                        if (categories.contains(cat.id)) {
+                          categories.remove(cat.id);
                         } else {
-                          selectedCategories.add(cat.id);
+                          categories.add(cat.id);
                         }
                       });
                     },
                     style: ButtonStyle(
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       backgroundColor: WidgetStateProperty.all<Color>(
-                        cat.color.withAlpha(selectedCategories.contains(cat.id) ? 50 : 0)
+                        cat.color.withAlpha(categories.contains(cat.id) ? 50 : 0)
                       ),
                     ),
                     child: Row(

@@ -17,7 +17,7 @@ class Transaction {
   void setName(String newValue) => _name = newValue;
   void setDate(DateTime newValue) => _date = newValue;
   void setAmount(double newValue) => _amount = newValue;
-  void setCategory(String newValue) => _category = newValue;
+  void setCategory(String? newValue) => _category = newValue;
 
   Transaction copyWith({String? name, DateTime? date, double? amount, String? category}) {
     return Transaction(_id, name ?? _name, date ?? _date, amount ?? _amount, category ?? _category);
